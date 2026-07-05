@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Escala de Operadores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0D13;
+    --surface:#141924;
+    --surface-2:#1B222E;
+    --surface-3:#232C3A;
+    --primary:#FF9F1C;
+    --primary-dim:#C97A15;
+    --primary-glow: rgba(255,159,28,0.22);
+    --accent:#00D9C0;
+    --accent-2:#8C7CFF;
+    --accent-3:#FF5D7A;
+    --text:#EEF1F6;
+    --text-muted:#8A93A6;
+    --text-faint:#5B6376;
+    --border: rgba(255,255,255,0.07);
+    --danger:#FF5470;
+    --success:#33D17A;
+    --radius-lg:22px;
+    --radius-md:16px;
+    --radius-sm:10px;
+    --shadow-lg: 0 16px 40px rgba(0,0,0,0.45);
+    --shadow-sm: 0 4px 14px rgba(0,0,0,0.3);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(255,159,28,0.08), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(140,124,255,0.07), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{ font-family:'Space Grotesk', 'Inter', sans-serif; letter-spacing:-0.01em; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    padding-bottom:92px;
+  }
+
+  /* ---------- TOPBAR ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    padding:22px 20px 16px;
+    background:linear-gradient(180deg, var(--bg) 60%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .brand{ display:flex; align-items:center; gap:12px; margin-bottom:4px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:11px;
+    background:linear-gradient(135deg, var(--primary), #FFC15E);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px var(--primary-glow);
+    flex-shrink:0;
+  }
+  .brand-mark svg{ width:20px; height:20px; }
+  .brand-title{ font-size:19px; font-weight:700; line-height:1.1; }
+  .brand-sub{ font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .topbar-tab-title{ font-size:26px; font-weight:700; margin:14px 0 2px; }
+  .topbar-tab-desc{ font-size:13.5px; color:var(--text-muted); }
+
+  main{ flex:1; padding:4px 20px 20px; }
+
+  /* ---------- TABS ---------- */
+  .tab{ display:none; animation:fadeSlideIn .38s cubic-bezier(.22,.9,.32,1); }
+  .tab.active{ display:block; }
+  @keyframes fadeSlideIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- DAY STRIP ---------- */
+  .date-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:16px 16px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow-sm);
+  }
+  .date-row{ display:flex; align-items:center; gap:10px; }
+  .team-count-row{
+    display:flex; align-items:center; gap:8px;
+    margin-top:14px; padding-top:14px;
+    border-top:1px solid var(--border);
+    font-size:12.5px; color:var(--text-muted);
+  }
+  .team-count-row svg{ width:14px; height:14px; color:var(--text-faint); flex-shrink:0; }
+  .team-count-row b{ color:var(--text); font-weight:700; }
+  .team-count-row .tc-sep{ color:var(--text-faint); }
+  .date-field{ flex:1; min-width:0; }
+  .date-field label{ display:block; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); margin-bottom:7px; }
+  .date-field input[type="date"]{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:12px 14px;
+    border-radius:12px;
+    font-size:16px;
+    font-family:'JetBrains Mono', monospace;
+    outline:none;
+    color-scheme: dark;
+  }
+  .date-field input[type="date"]:focus{ border-color:var(--primary); }
+  .weekday-badge{
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,159,28,0.1);
+    border:1px solid rgba(255,159,28,0.3);
+    color:var(--primary);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:12.5px;
+    padding:0 16px;
+    border-radius:12px;
+    white-space:nowrap;
+    align-self:stretch;
+  }
+  .shift-badge{
+    background:rgba(0,217,192,0.1);
+    border:1px solid rgba(0,217,192,0.3);
+    color:var(--accent);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px; font-weight:700;
+    padding:6px 12px; border-radius:100px;
+    white-space:nowrap; flex-shrink:0;
+  }
+  .ticket-date{ font-size:11.5px; color:var(--text-muted); margin-top:2px; font-family:'JetBrains Mono', monospace; }
+  .assign-row.is-empty .avatar{ background:var(--surface-3); border:1.5px dashed var(--text-faint); color:var(--text-faint); }
+  .assign-row.is-empty .assign-select{ color:var(--text-faint); font-style:italic; }
+
+  /* ---------- EMPTY STATE ---------- */
+  .empty-state{
+    text-align:center;
+    padding:52px 24px;
+    color:var(--text-muted);
+  }
+  .empty-state .glyph{
+    width:64px; height:64px; margin:0 auto 16px;
+    border-radius:20px;
+    background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--border);
+  }
+  .empty-state .glyph svg{ width:28px; height:28px; opacity:0.55; }
+  .empty-state p{ font-size:14px; line-height:1.5; margin:0; max-width:260px; margin:0 auto; }
+
+  /* ---------- TICKET CARDS ---------- */
+  .ticket{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    margin-bottom:16px;
+    overflow:hidden;
+    box-shadow:var(--shadow-sm);
+    opacity:0;
+    animation:ticketIn .5s cubic-bezier(.22,.9,.32,1) forwards;
+  }
+  @keyframes ticketIn{
+    from{ opacity:0; transform:translateY(16px) scale(.98); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .ticket-head{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:4px;
+    padding:22px 44px 16px;
+    position:relative;
+  }
+  .ticket-day{ font-size:17px; font-weight:700; }
+  .ticket-share{
+    position:absolute; top:14px; right:14px;
+    width:32px; height:32px; border-radius:50%;
+    background:var(--surface-2); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:background .15s ease, transform .15s ease;
+  }
+  .ticket-share:active{ transform:scale(0.9); }
+  .ticket-share svg{ width:15px; height:15px; color:var(--text-muted); }
+  .ticket-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; font-weight:600;
+    color:var(--accent);
+    background:rgba(0,217,192,0.1);
+    padding:4px 9px; border-radius:100px;
+    border:1px solid rgba(0,217,192,0.25);
+  }
+  .ticket-perf{
+    position:relative;
+    height:0;
+    border-top:1.5px dashed var(--border);
+    margin:0 0 2px;
+  }
+  .ticket-perf::before, .ticket-perf::after{
+    content:''; position:absolute; top:-9px; width:18px; height:18px;
+    border-radius:50%; background:var(--bg);
+  }
+  .ticket-perf::before{ left:-9px; }
+  .ticket-perf::after{ right:-9px; }
+  .ticket-body{ padding:8px 18px 16px; }
+  .assign-row{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .assign-row:last-child{ border-bottom:none; }
+  .avatar{
+    width:34px; height:34px; border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12.5px; font-weight:700;
+    color:#0A0D13;
+    flex-shrink:0;
+    font-family:'Space Grotesk', sans-serif;
+    transition:background .25s ease;
+  }
+  .assign-info{ flex:1; min-width:0; }
+  .assign-select{
+    appearance:none; -webkit-appearance:none; -moz-appearance:none;
+    background:transparent; border:none; outline:none;
+    font-size:14px; font-weight:600; color:var(--text);
+    font-family:'Inter', sans-serif;
+    padding:0; margin:0; width:100%;
+    cursor:pointer;
+    text-overflow:ellipsis;
+  }
+  .assign-select option{ background:var(--surface-2); color:var(--text); font-weight:500; }
+  .assign-fn{ font-size:12px; color:var(--text-muted); margin-top:1px; }
+  .assign-fn-select{
+    appearance:none; -webkit-appearance:none; -moz-appearance:none;
+    background:transparent; border:none; outline:none;
+    font-size:12px; color:var(--text-muted);
+    font-family:'Inter', sans-serif;
+    padding:0; margin:0; width:100%;
+    cursor:pointer;
+  }
+  .assign-fn-select option{ background:var(--surface-2); color:var(--text); font-weight:500; }
+  .assign-remove{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    background:var(--surface-2); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .assign-remove:hover{ background:var(--danger); }
+  .assign-remove:active{ transform:scale(0.88); }
+  .assign-remove svg{ width:12px; height:12px; color:var(--text-muted); }
+  .assign-remove:hover svg{ color:#fff; }
+  .add-row-btn{
+    width:100%; margin-top:4px;
+    background:var(--surface-2); border:1.5px dashed var(--border);
+    color:var(--text-muted); cursor:pointer;
+    padding:12px; border-radius:13px;
+    font-size:13px; font-weight:600; font-family:'Inter', sans-serif;
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .add-row-btn:hover{ background:var(--surface-3); border-color:var(--primary); color:var(--primary); }
+  .add-row-btn svg{ width:15px; height:15px; }
+
+  /* ---------- FAB ---------- */
+  .fab-wrap{ position:sticky; bottom:0; padding:18px 0 4px; }
+  .fab{
+    width:100%;
+    border:none; cursor:pointer;
+    background:linear-gradient(135deg, var(--primary), #FFB74D);
+    color:#1A1200;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:15px;
+    padding:16px; border-radius:16px;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    box-shadow:0 10px 26px var(--primary-glow);
+    transition:transform .15s ease;
+  }
+  .fab:active{ transform:scale(0.97); }
+  .fab svg{ width:19px; height:19px; transition:transform .5s ease; }
+  .fab.spin svg{ transform:rotate(360deg); }
+
+  /* ---------- FORMS / CHIPS (Equipe & Funções) ---------- */
+  .add-form{ display:flex; gap:8px; margin-bottom:20px; }
+  .add-form input{
+    flex:1;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:13px 16px;
+    border-radius:13px;
+    font-size:16px;
+    font-family:'Inter', sans-serif;
+    outline:none;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .add-form input:focus{ border-color:var(--primary); background:var(--surface-3); }
+  .add-form input::placeholder{ color:var(--text-faint); }
+  .add-btn{
+    width:48px; height:48px; flex-shrink:0;
+    border:none; cursor:pointer;
+    background:var(--primary);
+    border-radius:13px;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .15s ease;
+  }
+  .add-btn:active{ transform:scale(0.92); }
+  .add-btn svg{ width:20px; height:20px; color:#1A1200; }
+
+  .section-label{
+    font-size:11.5px; font-weight:600; letter-spacing:0.06em;
+    color:var(--text-faint); text-transform:uppercase;
+    margin:22px 0 10px;
+  }
+  .section-label:first-child{ margin-top:0; }
+  .section-label-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin:22px 0 10px;
+  }
+  .section-label-row .section-label{ margin:0; }
+  .reset-link{
+    background:none; border:none; cursor:pointer;
+    color:var(--danger); font-size:11px; font-weight:700;
+    font-family:'Inter', sans-serif;
+    padding:4px 0;
+  }
+
+  .operator-list{ display:flex; flex-direction:column; gap:9px; }
+  .chip-grid{ display:flex; flex-wrap:wrap; gap:9px; }
+  .operator-row{
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:10px 10px 10px 12px;
+    animation:chipPop .3s cubic-bezier(.34,1.56,.64,1);
+    transition:opacity .25s ease;
+  }
+  .operator-row.is-inactive .avatar{ filter:grayscale(0.6); opacity:0.55; }
+  .operator-row.is-inactive .operator-name{ color:var(--text-muted); }
+  .operator-info{ flex:1; min-width:0; }
+  .operator-name{ font-size:14px; font-weight:600; margin-bottom:5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .status-select{
+    appearance:none; -webkit-appearance:none; -moz-appearance:none;
+    border:none; outline:none; cursor:pointer;
+    font-size:10.5px; font-weight:700; font-family:'JetBrains Mono', monospace;
+    padding:5px 24px 5px 10px; border-radius:100px;
+    letter-spacing:0.02em;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 8px center;
+    background-size:9px;
+  }
+  .status-select option{ background:var(--surface-3); color:var(--text); font-weight:500; }
+  .item-chip{
+    display:flex; align-items:center; gap:9px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:100px;
+    padding:7px 8px 7px 8px;
+    animation:chipPop .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes chipPop{
+    from{ opacity:0; transform:scale(.7); }
+    to{ opacity:1; transform:scale(1); }
+  }
+  .item-chip .avatar{ width:26px; height:26px; border-radius:8px; font-size:10.5px; }
+  .item-chip.fn .avatar{ border-radius:8px; }
+  .item-chip span{ font-size:13.5px; font-weight:500; padding-right:2px; }
+  .chip-x{
+    width:20px; height:20px; border-radius:50%;
+    background:var(--surface-3);
+    border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .chip-x:hover{ background:var(--danger); }
+  .chip-x:active{ transform:scale(0.85); }
+  .chip-x svg{ width:11px; height:11px; color:var(--text-muted); }
+  .chip-x:hover svg{ color:#fff; }
+
+  /* ---------- HISTÓRICO ---------- */
+  .stats-row{ display:flex; gap:9px; margin-bottom:16px; }
+  .stat-pill{
+    flex:1; min-width:0;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:13px 12px;
+    box-shadow:var(--shadow-sm);
+  }
+  .stat-pill .stat-icon{ width:22px; height:22px; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:9px; }
+  .stat-pill .stat-icon svg{ width:12px; height:12px; }
+  .stat-pill .stat-label{ font-size:9.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em; font-weight:700; margin-bottom:5px; }
+  .stat-pill .stat-value{ font-size:14px; font-weight:700; font-family:'Space Grotesk', sans-serif; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .stat-pill .stat-caption{ font-size:10.5px; color:var(--text-muted); margin-top:2px; font-family:'JetBrains Mono', monospace; }
+
+  .chart-card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:22px 18px 20px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow-sm);
+    overflow:hidden;
+  }
+  .chart-title{ font-size:14.5px; font-weight:700; margin-bottom:2px; display:flex; align-items:center; justify-content:space-between; gap:7px; }
+  .chart-title-left{ display:flex; align-items:center; gap:7px; }
+  .chart-sub{ font-size:12px; color:var(--text-muted); margin-bottom:6px; }
+  .radial-wrap{ display:flex; justify-content:center; align-items:center; margin:10px 0 2px; position:relative; }
+  .radial-wrap::before{
+    content:''; position:absolute; width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle, var(--primary-glow), transparent 70%);
+    filter:blur(6px); pointer-events:none;
+  }
+  .radial-wrap svg{ position:relative; z-index:1; }
+  .radial-center-label{ font-family:'JetBrains Mono', monospace; }
+
+  .legend{ display:flex; flex-direction:column; gap:12px; margin-top:16px; }
+  .fn-detail-list{ margin-top:14px; }
+  .fn-detail-row{ padding:13px 0; border-bottom:1px solid var(--border); }
+  .fn-detail-row:last-child{ border-bottom:none; padding-bottom:2px; }
+  .fn-detail-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px; }
+  .fn-detail-name-wrap{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .fn-detail-rank{
+    width:19px; height:19px; border-radius:50%; flex-shrink:0;
+    background:var(--surface-3); display:flex; align-items:center; justify-content:center;
+    font-size:9.5px; font-weight:700; font-family:'JetBrains Mono', monospace; color:var(--text-faint);
+  }
+  .fn-detail-rank.r1{ background:linear-gradient(135deg,#FFE29A,#FFB74D); color:#1A1200; }
+  .fn-detail-rank.r2{ background:linear-gradient(135deg,#E4E9F2,#B7C0D1); color:#1A1200; }
+  .fn-detail-rank.r3{ background:linear-gradient(135deg,#E3A57A,#B8763F); color:#1A1200; }
+  .fn-detail-name{ font-size:13.5px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fn-detail-count{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--text); font-weight:700; flex-shrink:0; white-space:nowrap; }
+  .fn-detail-count span{ color:var(--text-faint); font-weight:500; }
+  .fn-bar-track{ height:10px; border-radius:100px; background:var(--surface-3); overflow:hidden; margin-bottom:8px; box-shadow:inset 0 0 0 1px var(--border); }
+  .fn-bar-fill{ height:100%; border-radius:100px; width:0%; transition:width 1s cubic-bezier(.22,.9,.32,1); }
+  .fn-detail-caption{ font-size:11.5px; color:var(--text-muted); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .fn-detail-caption b{ color:var(--text); font-weight:600; }
+  .fn-detail-caption .dot-sep{ width:3px; height:3px; border-radius:50%; background:var(--text-faint); flex-shrink:0; }
+  .fn-detail-caption svg{ width:11px; height:11px; color:var(--text-faint); flex-shrink:0; }
+  .legend-row{ display:flex; align-items:center; gap:11px; }
+  .legend-rank{
+    width:22px; height:22px; border-radius:50%; flex-shrink:0;
+    background:var(--surface-3); display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:700; font-family:'JetBrains Mono', monospace; color:var(--text-faint);
+  }
+  .legend-rank.r1{ background:linear-gradient(135deg,#FFE29A,#FFB74D); color:#1A1200; }
+  .legend-rank.r2{ background:linear-gradient(135deg,#E4E9F2,#B7C0D1); color:#1A1200; }
+  .legend-rank.r3{ background:linear-gradient(135deg,#E3A57A,#B8763F); color:#1A1200; }
+  .legend-main{ flex:1; min-width:0; }
+  .legend-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; gap:8px; }
+  .legend-name{ color:var(--text); font-weight:600; font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .legend-count{ color:var(--text-muted); font-family:'JetBrains Mono', monospace; font-size:11px; flex-shrink:0; }
+  .legend-bar-track{ height:7px; border-radius:100px; background:var(--surface-3); overflow:hidden; }
+  .legend-bar-fill{ height:100%; border-radius:100px; width:0%; transition:width 1s cubic-bezier(.22,.9,.32,1); }
+
+  .trend-scroll{ display:flex; gap:12px; align-items:flex-end; overflow-x:auto; padding:14px 2px 4px; min-height:118px; scrollbar-width:none; }
+  .trend-scroll::-webkit-scrollbar{ display:none; }
+  .trend-bar-wrap{ display:flex; flex-direction:column; align-items:center; gap:7px; flex-shrink:0; width:32px; }
+  .trend-bar-value{ font-size:10px; color:var(--text); font-weight:600; font-family:'JetBrains Mono', monospace; }
+  .trend-bar-col{ height:64px; display:flex; align-items:flex-end; }
+  .trend-bar{ width:15px; border-radius:7px 7px 3px 3px; background:linear-gradient(180deg,var(--accent),var(--accent-2)); height:0%; transition:height 1s cubic-bezier(.22,.9,.32,1); box-shadow:0 0 12px rgba(0,217,192,0.25); }
+  .trend-bar.current{ background:linear-gradient(180deg,var(--primary),#FFC15E); box-shadow:0 0 12px var(--primary-glow); }
+  .trend-bar-label{ font-size:9px; color:var(--text-faint); font-family:'JetBrains Mono', monospace; }
+
+  details.week-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  details.week-card summary{
+    list-style:none; cursor:pointer;
+    padding:15px 18px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:13.5px; font-weight:600;
+  }
+  details.week-card summary::-webkit-details-marker{ display:none; }
+  details.week-card summary .chev{ transition:transform .25s ease; color:var(--text-faint); }
+  details.week-card[open] summary .chev{ transform:rotate(180deg); }
+  details.week-card summary .wc-date{ font-weight:400; color:var(--text-muted); font-size:11.5px; font-family:'JetBrains Mono', monospace; }
+  details.week-card summary .wc-right{ display:flex; align-items:center; gap:10px; }
+  .wc-delete{
+    width:24px; height:24px; border-radius:50%; flex-shrink:0;
+    background:var(--surface-3); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .wc-delete:hover{ background:var(--danger); }
+  .wc-delete:active{ transform:scale(0.88); }
+  .wc-delete svg{ width:12px; height:12px; color:var(--text-muted); }
+  .wc-delete:hover svg{ color:#fff; }
+  .week-card-body{ padding:0 18px 16px; }
+  .wc-day{ font-size:12px; font-weight:700; color:var(--primary); margin:10px 0 4px; }
+  .wc-line{ font-size:12.5px; color:var(--text-muted); padding:2px 0; }
+  .wc-line b{ color:var(--text); font-weight:500; }
+
+  /* ---------- BOTTOM NAV ---------- */
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0;
+    display:flex; justify-content:center;
+    z-index:30;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(0deg, var(--bg) 55%, transparent);
+  }
+  .nav-inner{
+    max-width:448px; width:100%;
+    display:flex; justify-content:space-between;
+    background:rgba(20,25,36,0.85);
+    backdrop-filter: blur(18px);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:8px;
+    box-shadow:var(--shadow-lg);
+  }
+  .nav-btn{
+    flex:1; border:none; background:transparent; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:9px 4px; border-radius:14px;
+    color:var(--text-faint);
+    transition:color .2s ease, background .2s ease;
+  }
+  .nav-btn svg{ width:20px; height:20px; }
+  .nav-btn span{ font-size:10px; font-weight:600; }
+  .nav-btn.active{ color:var(--primary); background:rgba(255,159,28,0.1); }
+
+  /* ---------- TOASTS ---------- */
+  #toast-container{
+    position:fixed; top:16px; left:0; right:0;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    z-index:100; pointer-events:none;
+  }
+  .toast{
+    background:var(--surface-3);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:12px 18px;
+    border-radius:100px;
+    font-size:13px; font-weight:500;
+    box-shadow:var(--shadow-lg);
+    display:flex; align-items:center; gap:8px;
+    animation:toastIn .35s cubic-bezier(.22,.9,.32,1), toastOut .35s ease forwards 2.2s;
+  }
+  .toast .dot{ width:7px; height:7px; border-radius:50%; background:var(--success); flex-shrink:0; }
+  .toast.warn .dot{ background:var(--danger); }
+  @keyframes toastIn{ from{ opacity:0; transform:translateY(-14px); } to{ opacity:1; transform:translateY(0); } }
+  @keyframes toastOut{ to{ opacity:0; transform:translateY(-14px); } }
+
+  /* ---------- IMAGE PREVIEW MODAL ---------- */
+  .image-modal{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(6,8,12,0.92);
+    backdrop-filter:blur(6px);
+    display:none;
+    align-items:center; justify-content:center;
+    padding:24px;
+    animation:fadeSlideIn .25s ease;
+  }
+  .image-modal.open{ display:flex; }
+  .image-modal-inner{
+    width:100%; max-width:420px;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+  .image-modal-inner img{
+    width:100%; border-radius:18px;
+    box-shadow:var(--shadow-lg);
+    border:1px solid var(--border);
+  }
+  .image-modal-hint{
+    font-size:12.5px; color:var(--text-muted); text-align:center;
+    display:flex; align-items:center; gap:7px;
+    background:var(--surface-2); border:1px solid var(--border);
+    padding:10px 14px; border-radius:100px;
+  }
+  .image-modal-hint svg{ width:15px; height:15px; color:var(--primary); flex-shrink:0; }
+  .image-modal-actions{ display:flex; gap:10px; width:100%; }
+  .modal-btn{
+    flex:1; text-align:center; text-decoration:none;
+    padding:13px; border-radius:13px;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:14px;
+    background:linear-gradient(135deg, var(--primary), #FFB74D);
+    color:#1A1200; border:none; cursor:pointer;
+  }
+  .modal-btn.secondary{
+    background:var(--surface-2); color:var(--text); border:1px solid var(--border);
+  }
+
+  ::selection{ background:var(--primary); color:#1A1200; }
+
+  /* ---------- SHARE IMAGE TEMPLATE (fora da tela, só pra exportar) ---------- */
+  #shareTemplate{ position:absolute; left:-9999px; top:0; pointer-events:none; }
+  .shr-card{
+    width:400px;
+    background:linear-gradient(165deg, #0A0D13 0%, #141924 55%, #1B222E 100%);
+    border-radius:28px;
+    padding:32px 28px 26px;
+    font-family:'Inter', sans-serif;
+    color:#EEF1F6;
+  }
+  .shr-header{ display:flex; align-items:center; gap:11px; margin-bottom:26px; }
+  .shr-logo{
+    width:36px; height:36px; border-radius:11px; flex-shrink:0;
+    background:linear-gradient(135deg, #FF9F1C, #FFC15E);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .shr-brand{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:15.5px; }
+  .shr-brand-sub{ font-family:'JetBrains Mono', monospace; font-size:10px; color:#5B6376; letter-spacing:0.04em; text-transform:uppercase; margin-top:1px; }
+  .shr-day{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:26px; text-align:center; }
+  .shr-date{ text-align:center; font-family:'JetBrains Mono', monospace; font-size:12.5px; color:#8A93A6; margin-top:5px; }
+  .shr-shift{
+    margin:16px auto 0; width:fit-content;
+    background:rgba(0,217,192,0.12); border:1px solid rgba(0,217,192,0.35); color:#00D9C0;
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12.5px;
+    padding:8px 18px; border-radius:100px;
+  }
+  .shr-divider{ position:relative; height:0; border-top:1.5px dashed rgba(255,255,255,0.14); margin:24px 0 4px; }
+  .shr-divider::before, .shr-divider::after{
+    content:''; position:absolute; top:-10px; width:20px; height:20px; border-radius:50%;
+    background:#0A0D13;
+  }
+  .shr-divider::before{ left:-28px; }
+  .shr-divider::after{ right:-28px; }
+  .shr-row{ display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .shr-row:last-child{ border-bottom:none; padding-bottom:2px; }
+  .shr-avatar{
+    width:42px; height:42px; border-radius:13px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:15px; color:#0A0D13;
+  }
+  .shr-avatar.shr-empty{ background:#1B222E; border:1.5px dashed #4A5164; color:#5B6376; }
+  .shr-info{ flex:1; min-width:0; }
+  .shr-person{ font-size:15.5px; font-weight:700; color:#EEF1F6; }
+  .shr-person.shr-empty-text{ color:#5B6376; font-style:italic; font-weight:600; }
+  .shr-function{ font-size:12.5px; color:#8A93A6; margin-top:2px; }
+  .shr-footer{ margin-top:22px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.07); text-align:center; }
+  .shr-credit{ font-size:11px; color:#5B6376; font-family:'Inter', sans-serif; }
+  .shr-credit b{ color:#FF9F1C; font-weight:700; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1A1200" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="16" rx="3"/>
+          <path d="M3 10h18"/>
+          <path d="M8 3v4M16 3v4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">Escala de Operadores</div>
+        <div class="brand-sub">Feito por <strong style="color:var(--primary); font-weight:700;">Leandro Rocha</strong></div>
+      </div>
+    </div>
+    <div class="topbar-tab-title" id="tabTitle">Escala</div>
+    <div class="topbar-tab-desc" id="tabDesc">Turno das 00:00 às 07:30.</div>
+  </div>
+
+  <main>
+
+    <!-- TAB: ESCALA -->
+    <section class="tab active" id="tab-escala">
+      <div class="date-card">
+        <div class="date-row">
+          <div class="date-field">
+            <label for="inputData">Data da escala</label>
+            <input type="date" id="inputData">
+          </div>
+          <div class="weekday-badge" id="weekdayBadge">—</div>
+        </div>
+        <div class="team-count-row" id="teamCountRow"></div>
+      </div>
+      <div id="scheduleArea"></div>
+      <div class="fab-wrap">
+        <button class="fab" id="btnGerar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+            <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>
+          </svg>
+          Gerar escala do dia
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB: EQUIPE -->
+    <section class="tab" id="tab-equipe">
+      <div class="add-form">
+        <input type="text" id="inputOperador" placeholder="Nome do operador" maxlength="40">
+        <button class="add-btn" id="btnAddOperador">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="section-label">Operadores cadastrados</div>
+      <div class="operator-list" id="operatorList"></div>
+    </section>
+
+    <!-- TAB: FUNÇÕES -->
+    <section class="tab" id="tab-funcoes">
+      <div class="add-form">
+        <input type="text" id="inputFuncao" placeholder="Nome da função ou estação" maxlength="40">
+        <button class="add-btn" id="btnAddFuncao">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="section-label">Funções cadastradas</div>
+      <div class="chip-grid" id="functionList"></div>
+    </section>
+
+    <!-- TAB: HISTÓRICO -->
+    <section class="tab" id="tab-historico">
+      <div class="stats-row" id="statsRow"></div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          <div class="chart-title-left">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            Equilíbrio da equipe
+          </div>
+          <button type="button" class="reset-link" id="btnResetBalance">Zerar</button>
+        </div>
+        <div class="chart-sub" id="chartSub">Distribuição de escalas por operador</div>
+        <div class="radial-wrap" id="radialWrap"></div>
+        <div class="legend" id="chartLegend"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          <div class="chart-title-left">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.58a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82Z"/></svg>
+            Funções mais escaladas
+          </div>
+          <button type="button" class="reset-link" id="btnResetFunctions">Zerar</button>
+        </div>
+        <div class="chart-sub" id="functionChartSub">Quantas vezes cada função foi preenchida</div>
+        <div class="fn-detail-list" id="functionLegend"></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          <div class="chart-title-left">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-2)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/></svg>
+            Volume por dia
+          </div>
+        </div>
+        <div class="chart-sub">Total de atribuições em cada escala gerada</div>
+        <div class="trend-scroll" id="trendScroll"></div>
+      </div>
+
+      <div class="section-label-row">
+        <div class="section-label">Dias anteriores</div>
+        <button type="button" class="reset-link" id="btnResetHistory">Zerar histórico</button>
+      </div>
+      <div id="historyList"></div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-inner">
+      <button class="nav-btn active" data-tab="escala">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/></svg>
+        <span>Escala</span>
+      </button>
+      <button class="nav-btn" data-tab="equipe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Equipe</span>
+      </button>
+      <button class="nav-btn" data-tab="funcoes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.58a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82Z"/><circle cx="7.5" cy="7.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        <span>Funções</span>
+      </button>
+      <button class="nav-btn" data-tab="historico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/></svg>
+        <span>Histórico</span>
+      </button>
+    </div>
+  </nav>
+
+</div>
+
+<div id="toast-container"></div>
+
+<div class="image-modal" id="imageModal">
+  <div class="image-modal-inner">
+    <img id="previewImg" alt="Escala do dia">
+    <div class="image-modal-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 22v-6M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M22 12h-6M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></svg>
+      <span id="imageModalHintText">Salva na pasta Download do celular. Se não aparecer na Galeria, abra o app Arquivos ou Fotos e procure em "Download"</span>
+    </div>
+    <div class="image-modal-actions">
+      <a class="modal-btn" id="downloadImgLink" download="escala.png">Baixar PNG</a>
+      <button type="button" class="modal-btn secondary" id="closeImgModal">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="shareTemplate"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = 'escalaOperadoresApp_v1';
+  var WEEKDAY_NAMES = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var SHIFT_START = '00:00';
+  var SHIFT_END = '07:30';
+  var PALETTE = ['#FF9F1C','#00D9C0','#8C7CFF','#FF5D7A','#33D17A','#FFD166','#4CC9F0','#F72585'];
+
+  var TAB_META = {
+    escala:   { title:'Escala', desc:'Turno das 00:00 às 07:30.' },
+    equipe:   { title:'Equipe', desc:'Cadastre e gerencie os operadores disponíveis.' },
+    funcoes:  { title:'Funções', desc:'Cadastre as funções ou estações da operação.' },
+    historico:{ title:'Histórico', desc:'Dias anteriores e equilíbrio da equipe.' }
+  };
+
+  var STATUS_META = {
+    ativo:   { label: 'Ativo',   color: '#33D17A' },
+    ausente: { label: 'Ausente', color: '#FF5470' },
+    ferias:  { label: 'Férias',  color: '#8C7CFF' },
+    ps:      { label: 'P.S.',    color: '#FF9F1C' }
+  };
+
+  var state = loadState();
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        parsed.operators = parsed.operators || [];
+        parsed.operators.forEach(function(o){ if(!o.status) o.status = 'ativo'; });
+        parsed.functions = parsed.functions || [];
+        // migração: descarta escalas no formato antigo (semanal, com .days aninhado)
+        parsed.history = (Array.isArray(parsed.history) ? parsed.history : [])
+          .filter(function(item){ return item && Array.isArray(item.assignments); });
+        parsed.currentSchedule = (parsed.currentSchedule && Array.isArray(parsed.currentSchedule.assignments))
+          ? parsed.currentSchedule : null;
+        parsed.balanceResetAt = parsed.balanceResetAt || null;
+        parsed.functionResetAt = parsed.functionResetAt || null;
+        return parsed;
+      }
+    }catch(e){}
+    return { operators: [], functions: [], currentSchedule: null, history: [], balanceResetAt: null, functionResetAt: null };
+  }
+
+  function saveState(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function uid(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  }
+
+  function initials(name){
+    var parts = name.trim().split(/\s+/);
+    if(parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+    return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+  }
+
+  function colorFor(id){
+    var hash = 0;
+    for(var i=0;i<id.length;i++){ hash = (hash * 31 + id.charCodeAt(i)) >>> 0; }
+    return PALETTE[hash % PALETTE.length];
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp = a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+
+  function escapeHtml(str){
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------------- TOAST ----------------
+  function toast(msg, isWarn){
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast' + (isWarn ? ' warn' : '');
+    el.innerHTML = '<span class="dot"></span>' + escapeHtml(msg);
+    container.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 2600);
+  }
+
+  // ---------------- TABS ----------------
+  function switchTab(name){
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab === name);
+    });
+    document.getElementById('tabTitle').textContent = TAB_META[name].title;
+    document.getElementById('tabDesc').textContent = TAB_META[name].desc;
+    if(name === 'historico'){ renderHistoryTab(); }
+  }
+
+  document.querySelectorAll('.nav-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(btn.dataset.tab); });
+  });
+
+  // ---------------- OPERATORS ----------------
+  function addOperator(name){
+    name = name.trim();
+    if(!name){ return; }
+    var exists = state.operators.some(function(o){ return o.name.toLowerCase() === name.toLowerCase(); });
+    if(exists){ toast('Esse operador já existe', true); return; }
+    state.operators.push({ id: uid(), name: name, status: 'ativo' });
+    saveState();
+    renderOperators();
+    toast('Operador adicionado');
+  }
+
+  function removeOperator(id){
+    state.operators = state.operators.filter(function(o){ return o.id !== id; });
+    saveState();
+    renderOperators();
+    toast('Operador removido', true);
+  }
+
+  function setOperatorStatus(id, status){
+    var op = state.operators.filter(function(o){ return o.id === id; })[0];
+    if(!op) return;
+    op.status = status;
+    saveState();
+    toast(status === 'ativo' ? op.name + ' está disponível para a escala' : op.name + ' marcado como ' + STATUS_META[status].label.toLowerCase());
+  }
+
+  function renderTeamCount(){
+    var row = document.getElementById('teamCountRow');
+    if(!row) return;
+    var total = state.operators.length;
+    var active = state.operators.filter(function(o){ return (o.status || 'ativo') === 'ativo'; }).length;
+    row.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+      '<span><b>'+total+'</b> '+(total === 1 ? 'pessoa cadastrada' : 'pessoas cadastradas')+'</span>' +
+      '<span class="tc-sep">•</span>' +
+      '<span><b>'+active+'</b> '+(active === 1 ? 'disponível hoje' : 'disponíveis hoje')+'</span>';
+  }
+
+  function renderOperators(){
+    var list = document.getElementById('operatorList');
+    renderTeamCount();
+    if(state.operators.length === 0){
+      list.innerHTML = emptyStateHtml(
+        '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+        'Nenhum operador cadastrado. Adicione o primeiro nome acima.'
+      );
+      return;
+    }
+    list.innerHTML = state.operators.map(function(o){
+      var c = colorFor(o.id);
+      var status = o.status || 'ativo';
+      var meta = STATUS_META[status];
+      var options = Object.keys(STATUS_META).map(function(key){
+        return '<option value="'+key+'"'+(key === status ? ' selected' : '')+'>'+STATUS_META[key].label+'</option>';
+      }).join('');
+      return '<div class="operator-row' + (status !== 'ativo' ? ' is-inactive' : '') + '">' +
+        '<div class="avatar" style="background:'+c+'">'+initials(o.name)+'</div>' +
+        '<div class="operator-info">' +
+          '<div class="operator-name">'+escapeHtml(o.name)+'</div>' +
+          '<select class="status-select" data-op="'+o.id+'" style="background-color:'+hexToRgba(meta.color,0.16)+';color:'+meta.color+'">'+options+'</select>' +
+        '</div>' +
+        '<button class="chip-x" data-remove-op="'+o.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></button>' +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('[data-remove-op]').forEach(function(btn){
+      btn.addEventListener('click', function(){ removeOperator(btn.dataset.removeOp); });
+    });
+    list.querySelectorAll('.status-select').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        setOperatorStatus(sel.dataset.op, sel.value);
+        renderOperators();
+      });
+    });
+  }
+
+  // ---------------- FUNCTIONS ----------------
+  function addFunction(name){
+    name = name.trim();
+    if(!name){ return; }
+    var exists = state.functions.some(function(f){ return f.name.toLowerCase() === name.toLowerCase(); });
+    if(exists){ toast('Essa função já existe', true); return; }
+    state.functions.push({ id: uid(), name: name });
+    saveState();
+    renderFunctions();
+    toast('Função adicionada');
+  }
+
+  function removeFunction(id){
+    state.functions = state.functions.filter(function(f){ return f.id !== id; });
+    saveState();
+    renderFunctions();
+    toast('Função removida', true);
+  }
+
+  function renderFunctions(){
+    var list = document.getElementById('functionList');
+    if(state.functions.length === 0){
+      list.innerHTML = emptyStateHtml(
+        '<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.58a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82Z"/>',
+        'Nenhuma função cadastrada. Adicione a primeira função acima.'
+      );
+      return;
+    }
+    list.innerHTML = state.functions.map(function(f){
+      var c = colorFor(f.id);
+      return '<div class="item-chip fn">' +
+        '<div class="avatar" style="background:'+c+'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A1200" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.58a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82Z"/></svg></div>' +
+        '<span>'+escapeHtml(f.name)+'</span>' +
+        '<button class="chip-x" data-remove-fn="'+f.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></button>' +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('[data-remove-fn]').forEach(function(btn){
+      btn.addEventListener('click', function(){ removeFunction(btn.dataset.removeFn); });
+    });
+  }
+
+
+
+  function emptyStateHtml(pathSvg, text){
+    return '<div class="empty-state" style="width:100%">' +
+      '<div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+pathSvg+'</svg></div>' +
+      '<p>'+text+'</p>' +
+    '</div>';
+  }
+
+  // ---------------- DATE HELPERS ----------------
+  function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function todayISO(){
+    var d = new Date();
+    return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
+  }
+
+  function formatDateBR(iso){
+    var parts = iso.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  function formatDateShort(iso){
+    var parts = iso.split('-');
+    return parts[2] + '/' + parts[1];
+  }
+
+  function weekdayNameFor(iso){
+    var parts = iso.split('-').map(Number);
+    var d = new Date(parts[0], parts[1]-1, parts[2]);
+    return WEEKDAY_NAMES[d.getDay()];
+  }
+
+  function updateWeekdayBadge(){
+    var input = document.getElementById('inputData');
+    var badge = document.getElementById('weekdayBadge');
+    if(!input.value){ badge.textContent = '—'; return; }
+    badge.textContent = weekdayNameFor(input.value);
+  }
+
+  // ---------------- GENERATE SCHEDULE (dia único) ----------------
+  function generateDay(){
+    var ops = state.operators.filter(function(o){ return (o.status || 'ativo') === 'ativo'; });
+    var funcs = state.functions;
+    var dateInput = document.getElementById('inputData');
+    var dateVal = dateInput.value;
+
+    if(!dateVal){
+      toast('Escolha a data da escala', true);
+      return;
+    }
+    if(ops.length === 0 || funcs.length === 0){
+      var reason = state.operators.length > 0 && ops.length === 0
+        ? 'Todos os operadores estão ausentes, de férias ou P.S. Ajuste o status na aba Equipe'
+        : 'Adicione operadores e funções antes de gerar a escala';
+      toast(reason, true);
+      return;
+    }
+
+    // nunca repete a mesma pessoa no dia: cada operador é usado no máximo 1 vez
+    var usedToday = {};
+    var funcOrder = shuffle(funcs);
+    var shortfall = false;
+    var rawAssignments = funcOrder.map(function(fn){
+      var candidates = ops.filter(function(o){ return !usedToday[o.id]; });
+      if(candidates.length === 0){
+        shortfall = true;
+        return { functionId: fn.id, functionName: fn.name, operatorId: null, operatorName: null };
+      }
+      var chosen = shuffle(candidates)[0];
+      usedToday[chosen.id] = true;
+      return { functionId: fn.id, functionName: fn.name, operatorId: chosen.id, operatorName: chosen.name };
+    });
+    var ordered = funcs.map(function(fn){
+      return rawAssignments.filter(function(a){ return a.functionId === fn.id; })[0];
+    });
+
+    if(state.currentSchedule){
+      state.history.unshift(state.currentSchedule);
+      state.history = state.history.slice(0, 30);
+    }
+    state.currentSchedule = {
+      id: uid(),
+      date: dateVal,
+      dayName: weekdayNameFor(dateVal),
+      createdAt: new Date().toISOString(),
+      assignments: ordered
+    };
+    saveState();
+    renderSchedule();
+
+    if(shortfall){
+      toast('Faltam operadores ativos: algumas funções ficaram sem atribuição', true);
+    }else{
+      toast('Escala do dia gerada com sucesso');
+    }
+  }
+
+  function renderSchedule(){
+    var area = document.getElementById('scheduleArea');
+    var sc = state.currentSchedule;
+    if(!sc){
+      area.innerHTML = emptyStateHtml(
+        '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>',
+        'Escolha a data e toque em "Gerar escala do dia" para montar a escala automaticamente.'
+      );
+      return;
+    }
+
+    var rows = sc.assignments.map(function(a, idx){
+      var isEmpty = !a.operatorId;
+      var c = isEmpty ? 'transparent' : colorFor(a.operatorId);
+      var availableOps = state.operators.filter(function(o){
+        return (o.status || 'ativo') === 'ativo' || o.id === a.operatorId;
+      });
+      var opOptions = '<option value=""'+(isEmpty ? ' selected' : '')+'>— Sem operador —</option>' +
+        availableOps.map(function(o){
+          var status = o.status || 'ativo';
+          var suffix = status !== 'ativo' ? ' (' + STATUS_META[status].label + ')' : '';
+          return '<option value="'+o.id+'"'+(o.id === a.operatorId ? ' selected' : '')+'>'+escapeHtml(o.name + suffix)+'</option>';
+        }).join('');
+
+      var fnOptions = '<option value="" disabled'+(!a.functionId ? ' selected' : '')+'>Selecionar função…</option>' +
+        state.functions.map(function(f){
+          return '<option value="'+f.id+'"'+(f.id === a.functionId ? ' selected' : '')+'>'+escapeHtml(f.name)+'</option>';
+        }).join('');
+      // se a função foi excluída da aba Funções, ainda mostra o nome atual pra não perder o contexto
+      if(a.functionId && !state.functions.some(function(f){ return f.id === a.functionId; })){
+        fnOptions += '<option value="'+a.functionId+'" selected>'+escapeHtml(a.functionName || 'Função removida')+'</option>';
+      }
+
+      return '<div class="assign-row'+(isEmpty ? ' is-empty' : '')+'">' +
+        '<div class="avatar" style="background:'+c+'">'+(isEmpty ? '?' : initials(a.operatorName))+'</div>' +
+        '<div class="assign-info">' +
+          '<select class="assign-select" data-idx="'+idx+'">'+opOptions+'</select>' +
+          '<select class="assign-fn-select" data-idx="'+idx+'">'+fnOptions+'</select>' +
+        '</div>' +
+        '<button type="button" class="assign-remove" data-remove-idx="'+idx+'" aria-label="Remover função da escala"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></button>' +
+      '</div>';
+    }).join('');
+
+    area.innerHTML = '<div class="ticket">' +
+      '<div class="ticket-head">' +
+        '<button type="button" class="ticket-share" id="btnShareTicket" aria-label="Compartilhar escala">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"/><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"/></svg>' +
+        '</button>' +
+        '<div class="ticket-day">'+sc.dayName+'</div>' +
+        '<div class="ticket-date">'+formatDateBR(sc.date)+'</div>' +
+        '<div class="shift-badge" style="margin-top:8px;">'+SHIFT_START+' – '+SHIFT_END+'</div>' +
+      '</div>' +
+      '<div class="ticket-perf"></div>' +
+      '<div class="ticket-body">'+rows+
+        '<button type="button" class="add-row-btn" id="btnAddRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar função</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ---------------- COMPARTILHAR IMAGEM ----------------
+  function isIOS(){
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+
+  function buildShareCard(sc){
+    var rows = sc.assignments.map(function(a){
+      var isEmpty = !a.operatorId;
+      var avatarHtml;
+      if(isEmpty){
+        avatarHtml = '<div class="shr-avatar shr-empty">?</div>';
+      }else{
+        avatarHtml = '<div class="shr-avatar" style="background:'+colorFor(a.operatorId)+'">'+initials(a.operatorName)+'</div>';
+      }
+      var personHtml = isEmpty
+        ? '<div class="shr-person shr-empty-text">Vaga em aberto</div>'
+        : '<div class="shr-person">'+escapeHtml(a.operatorName)+'</div>';
+      var fnName = a.functionName ? escapeHtml(a.functionName) : 'Função não definida';
+
+      return '<div class="shr-row">' +
+        avatarHtml +
+        '<div class="shr-info">' +
+          personHtml +
+          '<div class="shr-function">'+fnName+'</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="shr-card">' +
+      '<div class="shr-header">' +
+        '<div class="shr-logo"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#1A1200" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/></svg></div>' +
+        '<div>' +
+          '<div class="shr-brand">Escala de Operadores</div>' +
+          '<div class="shr-brand-sub">Turno ' + SHIFT_START + ' – ' + SHIFT_END + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="shr-day">'+sc.dayName+'</div>' +
+      '<div class="shr-date">'+formatDateBR(sc.date)+'</div>' +
+      '<div class="shr-shift">'+SHIFT_START+' – '+SHIFT_END+'</div>' +
+      '<div class="shr-divider"></div>' +
+      rows +
+      '<div class="shr-footer">' +
+        '<div class="shr-credit">Feito por <b>Leandro Rocha</b></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function shareScheduleImage(){
+    if(!state.currentSchedule){
+      toast('Gere a escala primeiro', true);
+      return;
+    }
+    if(typeof html2canvas === 'undefined'){
+      toast('Sem conexão para gerar a imagem. Verifique a internet', true);
+      return;
+    }
+
+    var container = document.getElementById('shareTemplate');
+    container.innerHTML = buildShareCard(state.currentSchedule);
+    var cardEl = container.querySelector('.shr-card');
+
+    toast('Gerando imagem da escala…');
+
+    html2canvas(cardEl, {
+      backgroundColor: null,
+      scale: 3,
+      useCORS: true
+    }).then(function(canvas){
+      container.innerHTML = '';
+      var fileName = 'escala-' + state.currentSchedule.date + '.png';
+
+      canvas.toBlob(function(blob){
+        if(!blob){
+          toast('Não foi possível gerar a imagem', true);
+          return;
+        }
+        var blobUrl = URL.createObjectURL(blob);
+
+        if(isIOS()){
+          // no iPhone o download automático não é confiável: vai direto pro modo
+          // "toque e segure" que sempre funciona pra salvar nas Fotos
+          openImagePreview(blobUrl, fileName, false);
+        }else{
+          // no Android o download automático funciona bem e cai na pasta Download
+          downloadImageNow(blobUrl, fileName);
+          openImagePreview(blobUrl, fileName, true);
+        }
+      }, 'image/png');
+    }).catch(function(){
+      container.innerHTML = '';
+      toast('Erro ao gerar a imagem', true);
+    });
+  }
+
+  function downloadImageNow(url, fileName){
+    try{
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast('Imagem baixada! Veja na notificação ou na pasta Download');
+    }catch(e){
+      // se o navegador bloquear o download automático, o modal abaixo cobre o salvamento manual
+    }
+  }
+
+  function openImagePreview(url, fileName, alreadyDownloaded){
+    var modal = document.getElementById('imageModal');
+    var img = document.getElementById('previewImg');
+    var downloadLink = document.getElementById('downloadImgLink');
+    var hintText = document.getElementById('imageModalHintText');
+
+    img.src = url;
+    downloadLink.href = url;
+    downloadLink.download = fileName;
+
+    if(alreadyDownloaded){
+      hintText.textContent = 'Salva na pasta Download do celular. Se não aparecer na Galeria, abra o app Arquivos ou Fotos e procure em "Download"';
+    }else{
+      hintText.textContent = 'Toque e segure a imagem acima e escolha "Adicionar à Fotos" ou "Compartilhar" para enviar no WhatsApp';
+    }
+
+    modal.classList.add('open');
+    modal.dataset.blobUrl = url;
+  }
+
+  function closeImagePreview(){
+    var modal = document.getElementById('imageModal');
+    modal.classList.remove('open');
+    if(modal.dataset.blobUrl){
+      URL.revokeObjectURL(modal.dataset.blobUrl);
+      delete modal.dataset.blobUrl;
+    }
+  }
+  function allSchedulesForStats(){
+    var list = state.history.slice();
+    if(state.currentSchedule) list = [state.currentSchedule].concat(list);
+    return list;
+  }
+
+  function computeOperatorTotals(){
+    var totals = {};
+    var names = {};
+    var cutoff = state.balanceResetAt;
+    allSchedulesForStats().forEach(function(sc){
+      if(cutoff && sc.createdAt <= cutoff) return;
+      sc.assignments.forEach(function(a){
+        if(!a.operatorId) return;
+        totals[a.operatorId] = (totals[a.operatorId] || 0) + 1;
+        names[a.operatorId] = a.operatorName;
+      });
+    });
+    var arr = Object.keys(totals).map(function(id){
+      return { id: id, name: names[id], count: totals[id] };
+    });
+    arr.sort(function(a,b){ return b.count - a.count; });
+    return arr;
+  }
+
+  function computeFunctionDetails(){
+    var fnTotals = {};
+    var fnNames = {};
+    var fnOperatorCounts = {};
+    var opNames = {};
+    var grandTotal = 0;
+    var cutoff = state.functionResetAt;
+
+    allSchedulesForStats().forEach(function(sc){
+      if(cutoff && sc.createdAt <= cutoff) return;
+      sc.assignments.forEach(function(a){
+        if(!a.functionId) return;
+        fnTotals[a.functionId] = (fnTotals[a.functionId] || 0) + 1;
+        fnNames[a.functionId] = a.functionName;
+        grandTotal++;
+        if(a.operatorId){
+          fnOperatorCounts[a.functionId] = fnOperatorCounts[a.functionId] || {};
+          fnOperatorCounts[a.functionId][a.operatorId] = (fnOperatorCounts[a.functionId][a.operatorId] || 0) + 1;
+          opNames[a.operatorId] = a.operatorName;
+        }
+      });
+    });
+
+    var arr = Object.keys(fnTotals).map(function(id){
+      var opCounts = fnOperatorCounts[id] || {};
+      var opIds = Object.keys(opCounts).sort(function(a,b){ return opCounts[b] - opCounts[a]; });
+      var topOpId = opIds[0];
+      return {
+        id: id,
+        name: fnNames[id],
+        count: fnTotals[id],
+        pct: grandTotal > 0 ? Math.round((fnTotals[id] / grandTotal) * 100) : 0,
+        distinctOperators: opIds.length,
+        topOperatorName: topOpId ? opNames[topOpId] : null,
+        topOperatorCount: topOpId ? opCounts[topOpId] : 0
+      };
+    });
+    arr.sort(function(a,b){ return b.count - a.count; });
+    return { rows: arr, grandTotal: grandTotal };
+  }
+
+  function computeDailyTrend(){
+    var list = state.history.slice().reverse();
+    if(state.currentSchedule) list = list.concat([state.currentSchedule]);
+    return list.map(function(sc){
+      var total = sc.assignments.filter(function(a){ return a.operatorId; }).length;
+      return {
+        id: sc.id,
+        total: total,
+        label: formatDateShort(sc.date),
+        isCurrent: state.currentSchedule && sc.id === state.currentSchedule.id
+      };
+    });
+  }
+
+  function computeBalance(dataAll){
+    if(dataAll.length === 0) return 100;
+    var counts = dataAll.map(function(d){ return d.count; });
+    var max = Math.max.apply(null, counts);
+    var min = Math.min.apply(null, counts);
+    if(max === 0) return 100;
+    return Math.round((min / max) * 100);
+  }
+
+  function balanceColor(score){
+    if(score >= 80) return '#33D17A';
+    if(score >= 50) return '#FFD166';
+    return '#FF5470';
+  }
+
+  function hexToRgba(hex, alpha){
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
+  function renderStatsRow(dataAll){
+    var row = document.getElementById('statsRow');
+    if(dataAll.length === 0){
+      row.innerHTML = '';
+      return;
+    }
+    var top = dataAll[0];
+    var bottom = dataAll[dataAll.length - 1];
+    var balance = computeBalance(dataAll);
+    var bColor = balanceColor(balance);
+
+    row.innerHTML =
+      '<div class="stat-pill">' +
+        '<div class="stat-icon" style="background:rgba(255,159,28,0.14)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10l-1 8a4 4 0 0 1-8 0L7 4Z"/><path d="M5 4h2v4a3 3 0 0 1-3-3V4Z"/><path d="M19 4h-2v4a3 3 0 0 0 3-3V4Z"/></svg></div>' +
+        '<div class="stat-label">Mais escalado</div>' +
+        '<div class="stat-value">'+escapeHtml(top.name)+'</div>' +
+        '<div class="stat-caption">'+top.count+'x no total</div>' +
+      '</div>' +
+      '<div class="stat-pill">' +
+        '<div class="stat-icon" style="background:'+hexToRgba(bColor,0.14)+'"><svg viewBox="0 0 24 24" fill="none" stroke="'+bColor+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="'+bColor+'"/></svg></div>' +
+        '<div class="stat-label">Equilíbrio</div>' +
+        '<div class="stat-value" style="color:'+bColor+'">'+balance+'%</div>' +
+        '<div class="stat-caption">entre operadores</div>' +
+      '</div>' +
+      '<div class="stat-pill">' +
+        '<div class="stat-icon" style="background:rgba(0,217,192,0.14)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg></div>' +
+        '<div class="stat-label">Menos escalado</div>' +
+        '<div class="stat-value">'+escapeHtml(bottom.name)+'</div>' +
+        '<div class="stat-caption">'+bottom.count+'x no total</div>' +
+      '</div>';
+  }
+
+  function renderRadialChart(dataAll){
+    var wrap = document.getElementById('radialWrap');
+    var legend = document.getElementById('chartLegend');
+    var sub = document.getElementById('chartSub');
+    var data = dataAll.slice(0, 8);
+
+    if(data.length === 0){
+      wrap.innerHTML = '<div style="padding:30px 0;color:var(--text-faint);font-size:13px;text-align:center;">Gere escalas para ver o gráfico de equilíbrio.</div>';
+      legend.innerHTML = '';
+      sub.textContent = 'Distribuição de escalas por operador';
+      return;
+    }
+
+    var totalShifts = dataAll.reduce(function(s,d){ return s + d.count; }, 0);
+    sub.textContent = 'Baseado em ' + totalShifts + ' atribuições geradas';
+
+    var size = 236;
+    var center = size / 2;
+    var maxCount = Math.max.apply(null, data.map(function(d){ return d.count; }));
+    var baseR = 30;
+    var ringGap = (center - baseR - 16) / Math.max(data.length, 1);
+    var balance = computeBalance(dataAll);
+    var bColor = balanceColor(balance);
+
+    var circles = data.map(function(d, i){
+      var r = baseR + i * ringGap;
+      var circumference = 2 * Math.PI * r;
+      var frac = maxCount > 0 ? d.count / maxCount : 0;
+      var dash = Math.max(frac * circumference, circumference * 0.035);
+      var color = colorFor(d.id);
+      return '<circle cx="'+center+'" cy="'+center+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,0.045)" stroke-width="8"></circle>' +
+        '<circle cx="'+center+'" cy="'+center+'" r="'+r+'" fill="none" stroke="'+color+'" ' +
+        'stroke-width="8" stroke-linecap="round" ' +
+        'stroke-dasharray="'+circumference+'" stroke-dashoffset="'+circumference+'" ' +
+        'data-target-offset="'+(circumference - dash)+'" ' +
+        'transform="rotate(-90 '+center+' '+center+')" ' +
+        'style="filter:drop-shadow(0 0 5px '+hexToRgba(color,0.55)+'); transition: stroke-dashoffset 1.1s cubic-bezier(.22,.9,.32,1) '+(i*0.09)+'s;" ' +
+        'class="radial-arc"></circle>';
+    });
+
+    wrap.innerHTML =
+      '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">' +
+        circles.join('') +
+        '<circle cx="'+center+'" cy="'+center+'" r="'+(baseR-13)+'" fill="'+hexToRgba(bColor,0.1)+'" stroke="'+hexToRgba(bColor,0.35)+'" stroke-width="1"></circle>' +
+        '<text x="'+center+'" y="'+(center-2)+'" text-anchor="middle" fill="'+bColor+'" font-size="21" font-weight="700" font-family="Space Grotesk, sans-serif">'+balance+'%</text>' +
+        '<text x="'+center+'" y="'+(center+15)+'" text-anchor="middle" fill="var(--text-faint)" font-size="9" font-family="JetBrains Mono, monospace" letter-spacing="1">EQUILÍBRIO</text>' +
+      '</svg>';
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        wrap.querySelectorAll('.radial-arc').forEach(function(c){
+          c.setAttribute('stroke-dashoffset', c.getAttribute('data-target-offset'));
+        });
+      });
+    });
+
+    legend.innerHTML = data.map(function(d, i){
+      var color = colorFor(d.id);
+      var frac = maxCount > 0 ? (d.count / maxCount) * 100 : 0;
+      var rankClass = i === 0 ? 'r1' : (i === 1 ? 'r2' : (i === 2 ? 'r3' : ''));
+      var rankLabel = i < 3 ? (i+1) : (i+1);
+      return '<div class="legend-row">' +
+        '<div class="legend-rank '+rankClass+'">'+rankLabel+'</div>' +
+        '<div class="legend-main">' +
+          '<div class="legend-top">' +
+            '<div class="legend-name">'+escapeHtml(d.name)+'</div>' +
+            '<div class="legend-count">'+d.count+'x</div>' +
+          '</div>' +
+          '<div class="legend-bar-track"><div class="legend-bar-fill" data-w="'+frac+'" style="background:'+color+'"></div></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        legend.querySelectorAll('.legend-bar-fill').forEach(function(el){
+          el.style.width = el.getAttribute('data-w') + '%';
+        });
+      });
+    });
+  }
+
+  function renderFunctionChart(){
+    var legend = document.getElementById('functionLegend');
+    var sub = document.getElementById('functionChartSub');
+    var result = computeFunctionDetails();
+    var data = result.rows;
+
+    if(data.length === 0){
+      legend.innerHTML = '<div style="padding:14px 0;color:var(--text-faint);font-size:13px;text-align:center;">Sem dados ainda.</div>';
+      sub.textContent = 'Quantas vezes cada função foi preenchida';
+      return;
+    }
+
+    sub.textContent = 'Baseado em ' + result.grandTotal + ' atribuições • função mais comum: ' + data[0].name;
+
+    var maxCount = Math.max.apply(null, data.map(function(d){ return d.count; }));
+    legend.innerHTML = data.map(function(d, i){
+      var color = colorFor(d.id);
+      var frac = maxCount > 0 ? (d.count / maxCount) * 100 : 0;
+      var rankClass = i === 0 ? 'r1' : (i === 1 ? 'r2' : (i === 2 ? 'r3' : ''));
+
+      var varietyText = d.distinctOperators === 0
+        ? 'sem operador registrado'
+        : (d.distinctOperators === 1 ? '1 pessoa diferente' : d.distinctOperators + ' pessoas diferentes');
+
+      var topText = d.topOperatorName
+        ? '<span class="dot-sep"></span>mais feita por <b>' + escapeHtml(d.topOperatorName) + '</b> (' + d.topOperatorCount + 'x)'
+        : '';
+
+      return '<div class="fn-detail-row">' +
+        '<div class="fn-detail-top">' +
+          '<div class="fn-detail-name-wrap">' +
+            '<div class="fn-detail-rank '+rankClass+'">'+(i+1)+'</div>' +
+            '<div class="fn-detail-name">'+escapeHtml(d.name)+'</div>' +
+          '</div>' +
+          '<div class="fn-detail-count">'+d.count+'x <span>('+d.pct+'%)</span></div>' +
+        '</div>' +
+        '<div class="fn-bar-track"><div class="fn-bar-fill" data-w="'+frac+'" style="background:linear-gradient(90deg,'+color+','+hexToRgba(color,0.55)+')"></div></div>' +
+        '<div class="fn-detail-caption">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+          varietyText + topText +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        legend.querySelectorAll('.fn-bar-fill').forEach(function(el){
+          el.style.width = el.getAttribute('data-w') + '%';
+        });
+      });
+    });
+  }
+
+  function renderWeeklyTrend(){
+    var scroll = document.getElementById('trendScroll');
+    var data = computeDailyTrend();
+    if(data.length === 0){
+      scroll.innerHTML = '<div style="padding:14px 0;color:var(--text-faint);font-size:13px;text-align:center;width:100%;">Gere sua primeira escala para ver a tendência.</div>';
+      return;
+    }
+    var maxTotal = Math.max.apply(null, data.map(function(d){ return d.total; }));
+    scroll.innerHTML = data.map(function(d){
+      var pct = maxTotal > 0 ? (d.total / maxTotal) * 100 : 0;
+      return '<div class="trend-bar-wrap">' +
+        '<div class="trend-bar-value">'+d.total+'</div>' +
+        '<div class="trend-bar-col"><div class="trend-bar'+(d.isCurrent ? ' current' : '')+'" data-h="'+pct+'"></div></div>' +
+        '<div class="trend-bar-label">'+d.label+'</div>' +
+      '</div>';
+    }).join('');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        scroll.querySelectorAll('.trend-bar').forEach(function(el){
+          el.style.height = el.getAttribute('data-h') + '%';
+        });
+      });
+    });
+    scroll.scrollLeft = scroll.scrollWidth;
+  }
+
+  function renderHistoryList(){
+    var list = document.getElementById('historyList');
+    if(state.history.length === 0){
+      list.innerHTML = emptyStateHtml(
+        '<path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/>',
+        'Os dias anteriores aparecerão aqui assim que você gerar uma nova escala.'
+      );
+      return;
+    }
+    list.innerHTML = state.history.map(function(sc){
+      var lines = sc.assignments.map(function(a){
+        return '<div class="wc-line"><b>'+escapeHtml(a.functionName)+'</b> — '+escapeHtml(a.operatorName || 'Sem operador')+'</div>';
+      }).join('');
+      var body = '<div class="wc-day">'+SHIFT_START+' – '+SHIFT_END+'</div>' + lines;
+      return '<details class="week-card">' +
+        '<summary>' +
+          '<span>'+sc.dayName+'</span>' +
+          '<span class="wc-right">' +
+            '<span class="wc-date">'+formatDateBR(sc.date)+'</span>' +
+            '<button type="button" class="wc-delete" data-del-week="'+sc.id+'" aria-label="Excluir dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>' +
+            '<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+          '</span>' +
+        '</summary>' +
+        '<div class="week-card-body">'+body+'</div>' +
+      '</details>';
+    }).join('');
+    list.querySelectorAll('[data-del-week]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        deleteScheduleDay(btn.dataset.delWeek);
+      });
+    });
+  }
+
+  function deleteScheduleDay(id){
+    state.history = state.history.filter(function(w){ return w.id !== id; });
+    saveState();
+    renderHistoryTab();
+    toast('Dia removido do histórico', true);
+  }
+
+  function renderHistoryTab(){
+    var dataAll = computeOperatorTotals();
+    renderStatsRow(dataAll);
+    renderRadialChart(dataAll);
+    renderFunctionChart();
+    renderWeeklyTrend();
+    renderHistoryList();
+  }
+
+  // ---------------- EVENTS ----------------
+  document.getElementById('scheduleArea').addEventListener('change', function(e){
+    var opSel = e.target.closest('.assign-select');
+    var fnSel = e.target.closest('.assign-fn-select');
+
+    if(opSel){
+      var idx = parseInt(opSel.dataset.idx, 10);
+      if(!state.currentSchedule) return;
+      var assignment = state.currentSchedule.assignments[idx];
+
+      if(!opSel.value){
+        assignment.operatorId = null;
+        assignment.operatorName = null;
+        saveState();
+        renderSchedule();
+        toast('Operador removido dessa função', true);
+        return;
+      }
+
+      var newOp = state.operators.filter(function(o){ return o.id === opSel.value; })[0];
+      if(!newOp) return;
+      assignment.operatorId = newOp.id;
+      assignment.operatorName = newOp.name;
+      saveState();
+
+      var duplicate = state.currentSchedule.assignments.some(function(a, i2){ return i2 !== idx && a.operatorId === newOp.id; });
+      renderSchedule();
+      toast(duplicate ? (newOp.name + ' já está em outra função nesse dia') : 'Atribuição atualizada', duplicate);
+      return;
+    }
+
+    if(fnSel){
+      var idx2 = parseInt(fnSel.dataset.idx, 10);
+      if(!state.currentSchedule || !fnSel.value) return;
+      var newFn = state.functions.filter(function(f){ return f.id === fnSel.value; })[0];
+      if(!newFn) return;
+      var assignment2 = state.currentSchedule.assignments[idx2];
+      assignment2.functionId = newFn.id;
+      assignment2.functionName = newFn.name;
+      saveState();
+
+      var duplicateFn = state.currentSchedule.assignments.some(function(a, i2){ return i2 !== idx2 && a.functionId === newFn.id; });
+      renderSchedule();
+      toast(duplicateFn ? ('"' + newFn.name + '" já está em outra linha da escala') : 'Função atualizada', duplicateFn);
+      return;
+    }
+  });
+
+  document.getElementById('scheduleArea').addEventListener('click', function(e){
+    var shareBtn = e.target.closest('#btnShareTicket');
+    if(shareBtn){ shareScheduleImage(); return; }
+
+    var removeBtn = e.target.closest('.assign-remove');
+    if(removeBtn && state.currentSchedule){
+      var idx = parseInt(removeBtn.dataset.removeIdx, 10);
+      state.currentSchedule.assignments.splice(idx, 1);
+      saveState();
+      renderSchedule();
+      toast('Função removida da escala', true);
+      return;
+    }
+
+    var addBtn = e.target.closest('#btnAddRow');
+    if(addBtn && state.currentSchedule){
+      state.currentSchedule.assignments.push({
+        functionId: null, functionName: null, operatorId: null, operatorName: null
+      });
+      saveState();
+      renderSchedule();
+      return;
+    }
+  });
+
+  document.getElementById('btnResetHistory').addEventListener('click', function(){
+    if(state.history.length === 0){
+      toast('O histórico já está vazio', true);
+      return;
+    }
+    if(!confirm('Isso vai apagar todo o histórico de dias anteriores e zerar os gráficos. Deseja continuar?')) return;
+    state.history = [];
+    saveState();
+    renderHistoryTab();
+    toast('Histórico zerado', true);
+  });
+
+  document.getElementById('btnResetBalance').addEventListener('click', function(){
+    if(!confirm('Isso vai zerar o gráfico de equilíbrio da equipe (sem apagar os dias do histórico). Deseja continuar?')) return;
+    state.balanceResetAt = new Date().toISOString();
+    saveState();
+    renderHistoryTab();
+    toast('Equilíbrio da equipe zerado', true);
+  });
+
+  document.getElementById('btnResetFunctions').addEventListener('click', function(){
+    if(!confirm('Isso vai zerar o gráfico de funções mais escaladas (sem apagar os dias do histórico). Deseja continuar?')) return;
+    state.functionResetAt = new Date().toISOString();
+    saveState();
+    renderHistoryTab();
+    toast('Funções mais escaladas zeradas', true);
+  });
+
+  function keepInputVisible(input){
+    input.addEventListener('focus', function(){
+      setTimeout(function(){
+        input.scrollIntoView({ behavior:'smooth', block:'center' });
+      }, 300);
+    });
+  }
+  keepInputVisible(document.getElementById('inputOperador'));
+  keepInputVisible(document.getElementById('inputFuncao'));
+
+  document.getElementById('closeImgModal').addEventListener('click', closeImagePreview);
+  document.getElementById('imageModal').addEventListener('click', function(e){
+    if(e.target.id === 'imageModal') closeImagePreview();
+  });
+
+  document.getElementById('inputData').addEventListener('change', updateWeekdayBadge);
+
+  document.getElementById('btnGerar').addEventListener('click', function(){
+    var btn = this;
+    btn.classList.add('spin');
+    setTimeout(function(){ btn.classList.remove('spin'); }, 550);
+    generateDay();
+  });
+
+  document.getElementById('btnAddOperador').addEventListener('click', function(){
+    var input = document.getElementById('inputOperador');
+    addOperator(input.value);
+    input.value = '';
+    input.focus();
+  });
+  document.getElementById('inputOperador').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ document.getElementById('btnAddOperador').click(); }
+  });
+
+  document.getElementById('btnAddFuncao').addEventListener('click', function(){
+    var input = document.getElementById('inputFuncao');
+    addFunction(input.value);
+    input.value = '';
+    input.focus();
+  });
+  document.getElementById('inputFuncao').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ document.getElementById('btnAddFuncao').click(); }
+  });
+
+  // ---------------- INIT ----------------
+  function init(){
+    if(state.operators.length === 0){
+      ['Ana Souza','Bruno Lima','Carla Nunes','Diego Alves','Elaine Rocha'].forEach(function(n){
+        state.operators.push({ id: uid(), name: n, status: 'ativo' });
+      });
+      saveState();
+    }
+    if(state.functions.length === 0){
+      ['Recebimento','Separação','Expedição','Conferência'].forEach(function(n){
+        state.functions.push({ id: uid(), name: n });
+      });
+      saveState();
+    }
+    document.getElementById('inputData').value = todayISO();
+    updateWeekdayBadge();
+    renderOperators();
+    renderFunctions();
+    renderSchedule();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
